@@ -1,0 +1,48 @@
+name: gym_app
+description: "A new Flutter project."
+
+publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.7.0
+
+
+dependencies:
+  flutter:
+    sdk: flutter
+  video_player: ^2.9.5
+  firebase_core: ^3.13.0
+  firebase_auth: ^5.5.3
+  cloud_firestore: ^5.6.7
+  cupertino_icons: ^1.0.8
+  firebase_storage: ^12.4.6
+  image_picker: ^1.0.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+
+  flutter_lints: ^5.0.0
+
+
+flutter:
+  assets:
+    - assets/images/register.jpeg
+    - assets/images/image.png
+    - assets/images/profile.png
+    - assets/images/trainer.jpg
+    - assets/images/nutrition.jpeg
+    - assets/images/push.jpeg
+    - assets/images/pull.jpeg
+    - assets/images/legs.jpeg
+    - assets/videos/bench.mp4
+    - assets/videos/pull.mp4
+    - assets/videos/legs.mp4
+    - assets/videos/yoga.mp4
+    - assets/videos/fitness.mp4
+  uses-material-design: true
+
+
