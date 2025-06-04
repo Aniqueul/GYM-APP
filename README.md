@@ -18,6 +18,38 @@ samples, guidance on mobile development, and a full API reference.
 =======
 # GYM-APP
 A basic gym app with authentication and some videos and excercise sugestions using flutter and dart
+💪 Gym App – Features
+🔐 Authentication (Firebase Auth)
+✅ Sign Up & Login with email and password
+
+✅ Secure user authentication with Firebase
+
+✅ Password reset functionality
+
+🏋️‍♀️ Workout Plans
+✅ Browse workout plans: Push Day, Pull Day, Leg Day, Core Day
+
+✅ Each workout includes video previews and detailed exercises
+
+✅ PRO badge for premium workouts
+
+🎥 Workout Video Player
+✅ Integrated video player for each workout day
+
+
+
+✅ Progress tracking (planned for future)
+
+🧑‍💼 User Profile
+✅ View and edit profile picture
+
+✅ Display user email and basic info
+
+📸 Media Upload (Planned)
+🔄 Upload workout images or progress photos (using Firebase Storage)
+
+
+
 >>>>>>> 702f408db3a9aeef93db7ffff7bd978e92fa86ca
 video link
 >>>>>>> 
