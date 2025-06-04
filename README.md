@@ -19,5 +19,11 @@ samples, guidance on mobile development, and a full API reference.
 # GYM-APP
 A basic gym app with authentication and some videos and excercise sugestions using flutter and dart
 >>>>>>> 702f408db3a9aeef93db7ffff7bd978e92fa86ca
-video link https://youtube.com/shorts/o4JQz9xkTYI
->>>>>>> ![Uploading Screenshot 2025-06-03 190434.png…]()
+video link
+>>>>>>> 
+
+https://github.com/user-attachments/assets/082d19a1-b7a4-462b-9bcb-804ba8a757d5
+
+
+>>>>>>> ![]()
+![mockup](https://github.com/user-attachments/assets/7532d54b-b3e6-4ed0-8d9f-af1ab00013f1)
