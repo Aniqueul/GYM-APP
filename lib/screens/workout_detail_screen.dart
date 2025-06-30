@@ -129,8 +129,9 @@ class _WorkoutDetailScreenState extends State<WorkoutDetailScreen> {
             if (index == 0) {
               Navigator.pushAndRemoveUntil(
                 context,
-                MaterialPageRoute(builder: (context) => const HomeScreen()),
-                    (route) => false,
+                MaterialPageRoute(builder: (context) => HomeScreen(username: 'Guest')),
+
+                (route) => false,
               );
             }
           },

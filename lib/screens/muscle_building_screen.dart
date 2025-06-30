@@ -17,7 +17,8 @@ class _MuscleBuildingScreenState extends State<MuscleBuildingScreen> {
       // Home button tapped
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => const HomeScreen()),
+        MaterialPageRoute(builder: (context) => HomeScreen(username: 'Guest')),
+
       );
     } else if (index == 1) {
       // Current screen (MuscleBuilding), do nothing
@@ -43,6 +44,13 @@ class _MuscleBuildingScreenState extends State<MuscleBuildingScreen> {
       'image': 'assets/images/legs.jpeg',
       'pro': true
     },
+    {
+      'title': 'Core Day',
+      'workouts': 4,
+      'image': 'assets/images/legs.jpeg',
+      'pro': false
+    },
+
   ];
 
   @override
@@ -198,6 +206,8 @@ class _MuscleBuildingScreenState extends State<MuscleBuildingScreen> {
         return 'assets/videos/pull.mp4';
       case 'Leg Day':
         return 'assets/videos/legs.mp4';
+      case 'Core Day':
+        return 'assets/videos/legs.mp4';
       default:
         return '';
     }
@@ -211,6 +221,8 @@ class _MuscleBuildingScreenState extends State<MuscleBuildingScreen> {
         return ['Deadlift', 'Pull-Ups', 'Seated Row'];
       case 'Leg Day':
         return ['Squats', 'Leg Press', 'Lunges'];
+      case 'Core Day':
+        return ['Plank', 'Push ups', 'Lunges'];
       default:
         return [];
     }

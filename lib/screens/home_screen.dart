@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'login_screen.dart';
 import 'muscle_building_screen.dart';
 import 'yoga_screen.dart';
 import 'fitness_screen.dart';
-import 'account_screen.dart'; // <-- New import
+import 'account_screen.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+  final String username;
+
+  const HomeScreen({super.key, required this.username});
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -31,8 +31,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    User? user = FirebaseAuth.instance.currentUser;
-    String userEmail = user?.email ?? "Emma";
+    String username = widget.username;
 
     return Scaffold(
       backgroundColor: Colors.black,
@@ -65,9 +64,9 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               const SizedBox(height: 20),
 
-              // Greeting
+              // Greeting with username
               Text(
-                'Hey $userEmail!',
+                'Hey $username!',
                 style: const TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.w600),
               ),
               const SizedBox(height: 4),

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'home_screen.dart';
+import 'home_screen.dart'; // Replace with your actual home screen
 import 'register_screen.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -19,7 +19,8 @@ class _LoginScreenState extends State<LoginScreen> {
   bool _isLoading = false;
 
   bool isValidEmail(String email) {
-    return RegExp(r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$").hasMatch(email);
+    return RegExp(r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$")
+        .hasMatch(email);
   }
 
   void login() async {
@@ -37,14 +38,23 @@ class _LoginScreenState extends State<LoginScreen> {
     }
 
     try {
-      await _auth.signInWithEmailAndPassword(
+      UserCredential userCredential = await _auth.signInWithEmailAndPassword(
         email: emailController.text.trim(),
         password: passwordController.text.trim(),
       );
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (_) => const HomeScreen()),
-      );
+
+      User? user = userCredential.user;
+
+      if (user != null) {
+        String username = user.displayName ?? 'User';
+        // You can pass username to home or any other screen
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (_) => HomeScreen(username: username),
+          ),
+        );
+      }
     } catch (e) {
       setState(() {
         errorMessage = 'Login failed: ${e.toString()}';
@@ -71,12 +81,10 @@ class _LoginScreenState extends State<LoginScreen> {
           // Background Image
           SizedBox.expand(
             child: Image.asset(
-              'assets/images/register.jpeg',
+              'assets/images/register.jpeg', // Replace with your image path
               fit: BoxFit.cover,
-              filterQuality: FilterQuality.high, // Makes the image sharper
             ),
           ),
-
           // Dark overlay
           Container(
             color: Colors.black.withOpacity(0.6),
@@ -90,7 +98,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 children: [
                   const Spacer(),
                   const Text(
-                    'Welcome Back!',
+                    'Welcome Back',
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       color: Colors.white,
@@ -100,7 +108,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   const SizedBox(height: 12),
                   const Text(
-                    'Login to continue your fitness journey.',
+                    'Login and continue your fitness journey!',
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       color: Colors.white70,
@@ -117,7 +125,8 @@ class _LoginScreenState extends State<LoginScreen> {
                         style: const TextStyle(color: Colors.white),
                         decoration: InputDecoration(
                           hintText: 'Email',
-                          hintStyle: const TextStyle(color: Colors.white70),
+                          hintStyle:
+                          const TextStyle(color: Colors.white70),
                           filled: true,
                           fillColor: Colors.white12,
                           border: OutlineInputBorder(
@@ -132,7 +141,8 @@ class _LoginScreenState extends State<LoginScreen> {
                         style: const TextStyle(color: Colors.white),
                         decoration: InputDecoration(
                           hintText: 'Password',
-                          hintStyle: const TextStyle(color: Colors.white70),
+                          hintStyle:
+                          const TextStyle(color: Colors.white70),
                           filled: true,
                           fillColor: Colors.white12,
                           border: OutlineInputBorder(
@@ -145,14 +155,16 @@ class _LoginScreenState extends State<LoginScreen> {
                         onPressed: login,
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.deepOrangeAccent,
-                          padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 80),
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 16, horizontal: 80),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(30),
                           ),
                         ),
                         child: const Text(
                           'Login',
-                          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                          style: TextStyle(
+                              fontSize: 16, fontWeight: FontWeight.bold),
                         ),
                       ),
                       if (errorMessage.isNotEmpty)
@@ -166,7 +178,8 @@ class _LoginScreenState extends State<LoginScreen> {
                         onTap: () {
                           Navigator.pushReplacement(
                             context,
-                            MaterialPageRoute(builder: (_) => const RegisterScreen()),
+                            MaterialPageRoute(
+                                builder: (_) => const RegisterScreen()),
                           );
                         },
                         child: RichText(
@@ -177,7 +190,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 style: TextStyle(color: Colors.white),
                               ),
                               TextSpan(
-                                text: "Register",
+                                text: "Sign Up",
                                 style: TextStyle(
                                   color: Colors.orangeAccent,
                                   fontWeight: FontWeight.bold,

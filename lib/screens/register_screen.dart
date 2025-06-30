@@ -10,6 +10,7 @@ class RegisterScreen extends StatefulWidget {
 }
 
 class _RegisterScreenState extends State<RegisterScreen> {
+  final usernameController = TextEditingController();
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
   final _auth = FirebaseAuth.instance;
@@ -18,7 +19,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
   bool _isLoading = false;
 
   bool isValidEmail(String email) {
-    return RegExp(r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$").hasMatch(email);
+    return RegExp(r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$")
+        .hasMatch(email);
   }
 
   void register() async {
@@ -26,6 +28,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
       _isLoading = true;
       errorMessage = '';
     });
+
+    if (usernameController.text.trim().isEmpty) {
+      setState(() {
+        errorMessage = 'Please enter a username.';
+        _isLoading = false;
+      });
+      return;
+    }
 
     if (!isValidEmail(emailController.text.trim())) {
       setState(() {
@@ -36,10 +46,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
     }
 
     try {
-      await _auth.createUserWithEmailAndPassword(
+      UserCredential userCredential = await _auth.createUserWithEmailAndPassword(
         email: emailController.text.trim(),
         password: passwordController.text.trim(),
       );
+
+      await userCredential.user!.updateDisplayName(usernameController.text.trim());
+
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (_) => const LoginScreen()),
@@ -57,6 +70,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   @override
   void dispose() {
+    usernameController.dispose();
     emailController.dispose();
     passwordController.dispose();
     super.dispose();
@@ -109,7 +123,23 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       ? const CircularProgressIndicator(color: Colors.white)
                       : Column(
                     children: [
-                      // Email & Password Inputs
+                      // Username
+                      TextField(
+                        controller: usernameController,
+                        style: const TextStyle(color: Colors.white),
+                        decoration: InputDecoration(
+                          hintText: 'Username',
+                          hintStyle: const TextStyle(color: Colors.white70),
+                          filled: true,
+                          fillColor: Colors.white12,
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+
+                      // Email
                       TextField(
                         controller: emailController,
                         style: const TextStyle(color: Colors.white),
@@ -124,6 +154,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         ),
                       ),
                       const SizedBox(height: 12),
+
+                      // Password
                       TextField(
                         controller: passwordController,
                         obscureText: true,
@@ -139,32 +171,42 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         ),
                       ),
                       const SizedBox(height: 16),
+
+                      // Register Button
                       ElevatedButton(
                         onPressed: register,
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.deepOrangeAccent,
-                          padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 80),
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 16, horizontal: 80),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(30),
                           ),
                         ),
                         child: const Text(
                           'Get Started',
-                          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                          style: TextStyle(
+                              fontSize: 16, fontWeight: FontWeight.bold),
                         ),
                       ),
+
+                      // Error message
                       if (errorMessage.isNotEmpty)
                         Padding(
                           padding: const EdgeInsets.only(top: 12.0),
                           child: Text(errorMessage,
                               style: const TextStyle(color: Colors.redAccent)),
                         ),
+
                       const SizedBox(height: 10),
+
+                      // Already have account?
                       GestureDetector(
                         onTap: () {
                           Navigator.pushReplacement(
                             context,
-                            MaterialPageRoute(builder: (_) => const LoginScreen()),
+                            MaterialPageRoute(
+                                builder: (_) => const LoginScreen()),
                           );
                         },
                         child: RichText(

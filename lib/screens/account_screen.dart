@@ -1,5 +1,5 @@
 import 'dart:io';
-import 'package:flutter/foundation.dart'; // For kIsWeb
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -25,7 +25,6 @@ class _AccountScreenState extends State<AccountScreen> {
     final user = FirebaseAuth.instance.currentUser;
     if (user != null) {
       final ref = FirebaseStorage.instance.ref().child("user_profiles/${user.uid}.jpg");
-
       try {
         final url = await ref.getDownloadURL();
         setState(() {
@@ -49,11 +48,9 @@ class _AccountScreenState extends State<AccountScreen> {
 
       try {
         if (kIsWeb) {
-          // Web: Upload image as bytes
           final bytes = await pickedFile.readAsBytes();
           await ref.putData(bytes, SettableMetadata(contentType: 'image/jpeg'));
         } else {
-          // Mobile: Upload image as file
           final file = File(pickedFile.path);
           await ref.putFile(file);
         }
@@ -77,7 +74,8 @@ class _AccountScreenState extends State<AccountScreen> {
   }
 
   void _showChangePasswordDialog() {
-    final TextEditingController _passwordController = TextEditingController();
+    final TextEditingController _oldPasswordController = TextEditingController();
+    final TextEditingController _newPasswordController = TextEditingController();
 
     showDialog(
       context: context,
@@ -85,15 +83,31 @@ class _AccountScreenState extends State<AccountScreen> {
         return AlertDialog(
           backgroundColor: Colors.black,
           title: const Text("Change Password", style: TextStyle(color: Colors.white)),
-          content: TextField(
-            controller: _passwordController,
-            obscureText: true,
-            style: const TextStyle(color: Colors.white),
-            decoration: const InputDecoration(
-              hintText: "Enter new password",
-              hintStyle: TextStyle(color: Colors.white54),
-              border: OutlineInputBorder(),
-            ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                controller: _oldPasswordController,
+                obscureText: true,
+                style: const TextStyle(color: Colors.white),
+                decoration: const InputDecoration(
+                  hintText: "Old password",
+                  hintStyle: TextStyle(color: Colors.white54),
+                  border: OutlineInputBorder(),
+                ),
+              ),
+              const SizedBox(height: 10),
+              TextField(
+                controller: _newPasswordController,
+                obscureText: true,
+                style: const TextStyle(color: Colors.white),
+                decoration: const InputDecoration(
+                  hintText: "New password",
+                  hintStyle: TextStyle(color: Colors.white54),
+                  border: OutlineInputBorder(),
+                ),
+              ),
+            ],
           ),
           actions: [
             TextButton(
@@ -103,7 +117,10 @@ class _AccountScreenState extends State<AccountScreen> {
             TextButton(
               child: const Text("Update", style: TextStyle(color: Colors.white)),
               onPressed: () async {
-                final newPassword = _passwordController.text.trim();
+                final oldPassword = _oldPasswordController.text.trim();
+                final newPassword = _newPasswordController.text.trim();
+                final user = FirebaseAuth.instance.currentUser;
+
                 if (newPassword.length < 6) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(content: Text("Password must be at least 6 characters")),
@@ -112,7 +129,13 @@ class _AccountScreenState extends State<AccountScreen> {
                 }
 
                 try {
-                  await FirebaseAuth.instance.currentUser?.updatePassword(newPassword);
+                  final credential = EmailAuthProvider.credential(
+                    email: user!.email!,
+                    password: oldPassword,
+                  );
+
+                  await user.reauthenticateWithCredential(credential);
+                  await user.updatePassword(newPassword);
                   Navigator.pop(context);
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(content: Text("Password updated successfully")),
@@ -120,11 +143,11 @@ class _AccountScreenState extends State<AccountScreen> {
                 } catch (e) {
                   Navigator.pop(context);
                   ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text("Error: ${e.toString()}")),
+                    SnackBar(content: Text("Failed to update password: $e")),
                   );
                 }
               },
-            )
+            ),
           ],
         );
       },
@@ -149,7 +172,7 @@ class _AccountScreenState extends State<AccountScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Account"),
+        title: const Text("Account", style: TextStyle(color: Colors.white)),
         backgroundColor: Colors.black,
       ),
       backgroundColor: Colors.black,
@@ -162,9 +185,21 @@ class _AccountScreenState extends State<AccountScreen> {
               children: [
                 CircleAvatar(
                   radius: 60,
-                  backgroundImage: _profileImageUrl != null
-                      ? NetworkImage(_profileImageUrl!)
-                      : const AssetImage("assets/images/profile.png") as ImageProvider,
+                  backgroundColor: Colors.grey[800],
+                  child: _profileImageUrl != null
+                      ? ClipOval(
+                    child: Image.network(
+                      _profileImageUrl!,
+                      key: ValueKey(_profileImageUrl),
+                      width: 120,
+                      height: 120,
+                      fit: BoxFit.cover,
+                    ),
+                  )
+                      : const CircleAvatar(
+                    radius: 60,
+                    backgroundImage: AssetImage("assets/images/profile.png"),
+                  ),
                 ),
                 Positioned(
                   bottom: 0,
